@@ -4,7 +4,7 @@ $verify_token = $_REQUEST['hub_verify_token'];
 
 // Set this Verify Token Value on your Facebook App 
 if ($verify_token === 'testtoken') {
-  echo $challenge;
+	echo $challenge;
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
@@ -13,41 +13,41 @@ error_log(json_encode($input));
 $result = getSessionFromCache();
 sendMessage($result->key, $result->affinityToken, $input["entry"][0]["changes"][0]["value"]["messages"][0]["text"]["body"]);
 
-function sendMessage($sessionId, $affinity, $message) {
-  $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChatMessage';
-  // use key 'http' even if you send the request to https://...
-  $options = array(
-      'http' => array(
-          'header'  => "Content-type: application/json\r\n" . 
-              "X-LIVEAGENT-API-VERSION: 50\r\n" . 
-              "X-LIVEAGENT-SESSION-KEY: $sessionId\r\n" .
-              "X-LIVEAGENT-AFFINITY: $affinity\r\n" ,
-          'method'  => 'POST',
-          'content' => "{
+function sendMessage($sessionId, $affinity, $message)
+{
+	$url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChatMessage';
+	// use key 'http' even if you send the request to https://...
+	$options = array(
+		'http' => array(
+			'header'  => "Content-type: application/json\r\n" .
+				"X-LIVEAGENT-API-VERSION: 50\r\n" .
+				"X-LIVEAGENT-SESSION-KEY: $sessionId\r\n" .
+				"X-LIVEAGENT-AFFINITY: $affinity\r\n",
+			'method'  => 'POST',
+			'content' => "{
               text: \"$message\"
           }"
-      )
-  );
-  $context  = stream_context_create($options);
-  $result = json_decode(file_get_contents($url, false, $context));
-  if ($result === FALSE) {
-
-  }
-  
+		)
+	);
+	$context  = stream_context_create($options);
+	$result = json_decode(file_get_contents($url, false, $context));
+	if ($result === FALSE) {
+	}
 }
 
-function iniciateChatSession($sessionKey, $affinity){
-  $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChasitorInit';
-  // use key 'http' even if you send the request to https://...
-  $options = array(
-      'http' => array(
-          'header'  => "Content-type: application/json\r\n" . 
-                      "X-LIVEAGENT-API-VERSION: 50\r\n" . 
-                      "X-LIVEAGENT-SESSION-KEY: $sessionKey\r\n" .
-                      "X-LIVEAGENT-AFFINITY: $affinity\r\n" .
-                      "X-LIVEAGENT-SEQUENCE: 1\r\n",
-          'method'  => 'POST',
-          'content' => '{
+function iniciateChatSession($sessionKey, $affinity)
+{
+	$url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChasitorInit';
+	// use key 'http' even if you send the request to https://...
+	$options = array(
+		'http' => array(
+			'header'  => "Content-type: application/json\r\n" .
+				"X-LIVEAGENT-API-VERSION: 50\r\n" .
+				"X-LIVEAGENT-SESSION-KEY: $sessionKey\r\n" .
+				"X-LIVEAGENT-AFFINITY: $affinity\r\n" .
+				"X-LIVEAGENT-SEQUENCE: 1\r\n",
+			'method'  => 'POST',
+			'content' => '{
               "organizationId":"00D4R0000007tWz",
               "deploymentId":"5724R000000c2nq",
               "buttonId":"5734R000000c3JX",
@@ -98,78 +98,78 @@ function iniciateChatSession($sessionKey, $affinity){
               ]
               }
           }'
-      )
-  );
-  $context  = stream_context_create($options);
-  $result = file_get_contents($url, false, $context);
-  if ($result === FALSE) {
-
-  }
+		)
+	);
+	$context  = stream_context_create($options);
+	$result = file_get_contents($url, false, $context);
+	if ($result === FALSE) {
+	}
 }
 
-function getSessionFromCache(){
-  try {
-    $myfile = fopen("sessions.txt", "r") or die("Unable to open file!");
-    $data = json_decode(fread($myfile, filesize("sessions.txt")));
-    fclose($myfile);
-    if(sessionStilValid($data->key, $data->affinityToken)) {
-      return $data;
-    } else {
-      $data = getNewSessionId();
-      return $data;
-    }
-    
-  } catch (Throwable $th){
-    $result = getNewSessionId();
-    return $result;
-  }
 
-  function sessionStilValid($sessionId, $affinity) {
-      $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChasitorResyncState';
-    // use key 'http' even if you send the request to https://...
-      $options = array(
-          'http' => array(
-            'header'  => "Content-type: application/json\r\n" . 
-                        "X-LIVEAGENT-API-VERSION: 50\r\n" . 
-                        "X-LIVEAGENT-SESSION-KEY: $sessionKey\r\n" .
-                        "X-LIVEAGENT-AFFINITY: $affinity\r\n" .
-                        "X-LIVEAGENT-SEQUENCE: 1\r\n",
-              'method'  => 'POST',
-              'content' => '{
-                organizationId: "00D4R0000007tWz"
-          }'
-          )
-      );
-      $context  = stream_context_create($options);
-      $result = json_decode(file_get_contents($url, false, $context));
-      error_log(json_encode($result));
-      if ($result === FALSE) {
-        return false;
-      } else {
-        return true;
-      }
-  }
-
-  function getNewSessionId() {
-    $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/System/SessionId';
-      // use key 'http' even if you send the request to https://...
-        $options = array(
-            'http' => array(
-                'header'  => "X-LIVEAGENT-API-VERSION: 48\r\n" . 
-                              "X-LIVEAGENT-AFFINITY: null\r\n",
-                'method'  => 'GET'
-            )
-        );
-        $context  = stream_context_create($options);
-        $result = json_decode(file_get_contents($url, false, $context));
-        if ($result === FALSE) {
-
-        }
-        $myfile = fopen("sessions.txt", "w") or die("Unable to open file!");
-        fwrite($myfile, json_encode($result));
-        fclose($myfile);
-        iniciateChatSession($result->key, $result->affinityToken);
-        return $result;
-  }
+function sessionStilValid($sessionId, $affinity)
+{
+	$url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChasitorResyncState';
+	// use key 'http' even if you send the request to https://...
+	$options = array(
+		'http' => array(
+			'header'  => "Content-type: application/json\r\n" .
+				"X-LIVEAGENT-API-VERSION: 50\r\n" .
+				"X-LIVEAGENT-SESSION-KEY: $sessionKey\r\n" .
+				"X-LIVEAGENT-AFFINITY: $affinity\r\n" .
+				"X-LIVEAGENT-SEQUENCE: 1\r\n",
+			'method'  => 'POST',
+			'content' => '{
+              organizationId: "00D4R0000007tWz"
+        }'
+		)
+	);
+	$context  = stream_context_create($options);
+	$result = json_decode(file_get_contents($url, false, $context));
+	error_log(json_encode($result));
+	if ($result === FALSE) {
+		return false;
+	} else {
+		return true;
+	}
 }
-?>
+
+function getNewSessionId()
+{
+	$url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/System/SessionId';
+	// use key 'http' even if you send the request to https://...
+	$options = array(
+		'http' => array(
+			'header'  => "X-LIVEAGENT-API-VERSION: 48\r\n" .
+				"X-LIVEAGENT-AFFINITY: null\r\n",
+			'method'  => 'GET'
+		)
+	);
+	$context  = stream_context_create($options);
+	$result = json_decode(file_get_contents($url, false, $context));
+	if ($result === FALSE) {
+	}
+	$myfile = fopen("sessions.txt", "w") or die("Unable to open file!");
+	fwrite($myfile, json_encode($result));
+	fclose($myfile);
+	iniciateChatSession($result->key, $result->affinityToken);
+	return $result;
+}
+
+function getSessionFromCache()
+{
+	try {
+		$myfile = fopen("sessions.txt", "r") or die("Unable to open file!");
+		$data = json_decode(fread($myfile, filesize("sessions.txt")));
+		fclose($myfile);
+		if (sessionStilValid($data->key, $data->affinityToken)) {
+			return $data;
+		} else {
+			$res = getNewSessionId();
+			return $res;
+		}
+	} catch (Throwable $th) {
+		$result = getNewSessionId();
+		return $result;
+	}
+}
