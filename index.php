@@ -130,6 +130,9 @@ function getSessionFromCache(){
     if ($result === FALSE) {
 
     }
+    $myfile = fopen("sessions.txt", "w") or die("Unable to open file!");
+    fwrite($myfile, json_encode($result));
+    fclose($myfile);
     iniciateChatSession($result->key, $result->affinityToken);
     return $result;
   }
