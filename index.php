@@ -10,21 +10,8 @@ if ($verify_token === 'testtoken') {
 $input = json_decode(file_get_contents('php://input'), true);
 
 error_log(json_encode($input));
-$url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/System/SessionId';
-  // use key 'http' even if you send the request to https://...
-  $options = array(
-      'http' => array(
-          'header'  => "X-LIVEAGENT-API-VERSION: 48\r\n" . "X-LIVEAGENT-AFFINITY: null\r\n",
-          'method'  => 'GET'
-      )
-  );
-  $context  = stream_context_create($options);
-  $result = json_decode(file_get_contents($url, false, $context));
-  if ($result === FALSE) {
-
-  }
-  iniciateChatSession($result->key, $result->affinityToken);
-  sendMessage($result->key, $result->affinityToken, $input["entry"][0]["changes"][0]["value"]["messages"][0]["text"]["body"]);
+$result = getSessionFromCache();
+sendMessage($result->key, $result->affinityToken, $input["entry"][0]["changes"][0]["value"]["messages"][0]["text"]["body"]);
 
 function sendMessage($sessionId, $affinity, $message) {
   error_log($message);
@@ -120,5 +107,32 @@ function iniciateChatSession($sessionKey, $affinity){
   if ($result === FALSE) {
 
   }
+}
+
+function getSessionFromCache(){
+  try {
+    $myfile = fopen("sessions.txt", "r") or die("Unable to open file!");
+    $data = json_decode(fread($myfile, filesize("sessions.txt")));
+    fclose($myfile);
+    return $data;
+  } catch (Throwable $th){
+    $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/System/SessionId';
+  // use key 'http' even if you send the request to https://...
+    $options = array(
+        'http' => array(
+            'header'  => "X-LIVEAGENT-API-VERSION: 48\r\n" . 
+                          "X-LIVEAGENT-AFFINITY: null\r\n",
+            'method'  => 'GET'
+        )
+    );
+    $context  = stream_context_create($options);
+    $result = json_decode(file_get_contents($url, false, $context));
+    if ($result === FALSE) {
+
+    }
+    iniciateChatSession($result->key, $result->affinityToken);
+    return $result;
+  }
+  
 }
 ?>
