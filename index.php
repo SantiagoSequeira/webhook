@@ -7,7 +7,7 @@ if ($verify_token === 'testtoken') {
   echo $challenge;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_encode(json_decode(file_get_contents('php://input'), true));
 
 error_log($input);
 
