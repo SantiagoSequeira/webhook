@@ -24,7 +24,7 @@ $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/System/SessionId'
 
   }
   iniciateChatSession($result->key, $result->affinityToken);
-  sendMessage($result->key, $result->affinityToken, $input["entry"][0]["changes"]["value"]["messages"][0]["text"]["body"]);
+  sendMessage($result->key, $result->affinityToken, $input["entry"][0]["changes"][0]["value"]["messages"][0]["text"]["body"]);
 
 function sendMessage($sessionId, $affinity, $message) {
   error_log($message);
