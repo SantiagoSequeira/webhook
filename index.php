@@ -116,18 +116,15 @@ function sessionStilValid($sessionKey, $affinity)
 			'header'  => "Content-type: application/json\r\n" .
 				"X-LIVEAGENT-API-VERSION: 50\r\n" .
 				"X-LIVEAGENT-SESSION-KEY: $sessionKey\r\n" .
-				"X-LIVEAGENT-AFFINITY: $affinity\r\n" .
-				"X-LIVEAGENT-SEQUENCE: 1\r\n",
+				"X-LIVEAGENT-AFFINITY: $affinity\r\n",
 			'method'  => 'POST',
-			'content' => '{
-              organizationId: "00D4R0000007tWz"
-        }'
+			'content' => '{"organizationId": "00D4R0000007tWz"}'
 		)
 	);
 	$context  = stream_context_create($options);
-	$result = json_decode(file_get_contents($url, false, $context));
-	error_log(json_encode($result));
-	return ($result !== null);
+	$result = file_get_contents($url, false, $context);
+	error_log($result);
+	return ($result === 'OK');
 }
 
 function getNewSessionId()
