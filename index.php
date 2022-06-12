@@ -28,6 +28,7 @@ $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/System/SessionId'
   sendMessage($result->key, $result->affinityToken, $input->entry[0]->changes[0]->value->messages[0]->text->body);
 
 function sendMessage($sessionId, $affinity, $message) {
+  error_log($message);
   $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChatMessage';
   // use key 'http' even if you send the request to https://...
   $options = array(
@@ -38,12 +39,13 @@ function sendMessage($sessionId, $affinity, $message) {
               "X-LIVEAGENT-AFFINITY: $affinity\r\n" ,
           'method'  => 'POST',
           'content' => "{
-              text: \"$message\"
+              \"text\": \"$message\"
           }"
       )
   );
   $context  = stream_context_create($options);
   $result = json_decode(file_get_contents($url, false, $context));
+  error_log(json_encode($result));
   if ($result === FALSE) {
 
   }
