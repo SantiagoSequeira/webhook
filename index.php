@@ -14,13 +14,9 @@ error_log(json_encode($input));
 
 sendMessage($input->entry[0]->changes[0]->value->messages[0]->text->body);
 
-
-
-
-
 function sendMessage($message) {
-  $sessionId = '27c0a22c-a226-48aa-91b5-23a07f1b5a9f!1654996893555!8+0mYpddhM3kx+CJOrOxAjrQIDg=';
-  $affinity = '99b51fa0';
+  $sessionId = '3fd1bab6-c74e-4eec-b862-f0831b67161c!1654998450693!qXxrApROx00Ahpdk08ecD9WA8cE=';
+  $affinity = '99b41fa0';
   $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChatMessage';
   // use key 'http' even if you send the request to https://...
   $options = array(
@@ -30,9 +26,9 @@ function sendMessage($message) {
               "X-LIVEAGENT-SESSION-KEY: $sessionId\r\n" .
               "X-LIVEAGENT-AFFINITY: $affinity\r\n" ,
           'method'  => 'POST',
-          'content' => '{
-              text: " ' . $message . '"
-          }'
+          'content' => "{
+              text: \"$message\"
+          }"
       )
   );
   $context  = stream_context_create($options);
