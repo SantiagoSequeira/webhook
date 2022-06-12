@@ -127,11 +127,7 @@ function sessionStilValid($sessionKey, $affinity)
 	$context  = stream_context_create($options);
 	$result = json_decode(file_get_contents($url, false, $context));
 	error_log(json_encode($result));
-	if ($result === FALSE) {
-		return false;
-	} else {
-		return true;
-	}
+	return ($result !== null);
 }
 
 function getNewSessionId()
