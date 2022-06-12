@@ -107,7 +107,7 @@ function iniciateChatSession($sessionKey, $affinity)
 }
 
 
-function sessionStilValid($sessionId, $affinity)
+function sessionStilValid($sessionKey, $affinity)
 {
 	$url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChasitorResyncState';
 	// use key 'http' even if you send the request to https://...
