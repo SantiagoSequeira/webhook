@@ -12,7 +12,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 error_log(json_encode($input));
 
 
-sendMessage($input->entry[0]->changes[0]->value->messages[0]->text->body)
+sendMessage($input->entry[0]->changes[0]->value->messages[0]->text->body);
 
 
 
