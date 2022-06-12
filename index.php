@@ -28,8 +28,6 @@ $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/System/SessionId'
   sendMessage($result->key, $result->affinityToken, $input->entry[0]->changes[0]->value->messages[0]->text->body);
 
 function sendMessage($sessionId, $affinity, $message) {
-  $sessionId = '3fd1bab6-c74e-4eec-b862-f0831b67161c!1654998450693!qXxrApROx00Ahpdk08ecD9WA8cE=';
-  $affinity = '99b41fa0';
   $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChatMessage';
   // use key 'http' even if you send the request to https://...
   $options = array(
@@ -51,6 +49,7 @@ function sendMessage($sessionId, $affinity, $message) {
   }
   
 }
+
 function iniciateChatSession($sessionKey, $affinity){
   $url = 'https://d.la1-c2-ia4.salesforceliveagent.com/chat/rest/Chasitor/ChasitorInit';
   // use key 'http' even if you send the request to https://...
