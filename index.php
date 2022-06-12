@@ -120,7 +120,7 @@ function getSessionFromCache(){
     }
     
   } catch (Throwable $th){
-    $result = getNewSessionId($result->key, $result->affinityToken);
+    $result = getNewSessionId();
     return $result;
   }
 
