@@ -38,7 +38,7 @@ function sendMessage($sessionId, $affinity, $message) {
               "X-LIVEAGENT-AFFINITY: $affinity\r\n" ,
           'method'  => 'POST',
           'content' => "{
-              \"text\": \"$message\"
+              text: \"$message\"
           }"
       )
   );
